@@ -24,6 +24,17 @@ export default class NVToolsEditing extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		console.log('NVToolsEditing init');
+
+		// Xử lý xóa rỗng thẻ <p>&nbsp;</p>
+		const emptyParagraphRegexp = /(^|<body\b[^>]*>)\s*<(p|div|address|h\d|center|pre)[^>]*>\s*(?:<br[^>]*>|&nbsp;|\u00A0|&#160;)?\s*(:?<\/\2>)?\s*(?=$|<\/body>)/gi;
+
+		const originalGetData = editor.getData;
+		editor.getData = function () {
+			let data = originalGetData.apply(this);
+			data = data.replace(emptyParagraphRegexp, function (match, lookback) {
+				return lookback;
+			});
+			return data;
+		};
 	}
 }

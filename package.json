@@ -19,6 +19,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "41.2.0",
     "@ckeditor/ckeditor5-utils": "41.2.0",
+    "@ckeditor/ckeditor5-engine": "41.2.0",
     "typescript": "5.0.4"
   },
   "author": "VINADES.,JSC (https://vinades.vn/)",
