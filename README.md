@@ -1,5 +1,7 @@
 # Plugin NVTools cho Ckeditor 5
 
+> Hiện tại CKEditor 5 bản 46 test thấy mặc định họ đã xử lý được những gì mà tool này xử lý do đó không cần phát triển Repo này nữa.
+
 Các công cụ ẩn hỗ trợ tích hợp vào NukeViet CMS:
 - Xóa `<p>&nbsp;</p>` khi submit form
 
