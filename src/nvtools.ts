@@ -1,14 +1,14 @@
 /**
  * NukeViet NVTools for CKEditor5
- * @version 4.x
+ * @version 5.x
  * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2024 VINADES.,JSC. All rights reserved
+ * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
  * @license GNU/GPL version 2 or any later version
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
-import NVToolsEditing from './nvtoolsediting.js';
+import { Plugin } from 'ckeditor5';
+import NVToolsUI from './nvtoolsui.js';
 
 export default class NVTools extends Plugin {
     /**
@@ -22,6 +22,6 @@ export default class NVTools extends Plugin {
      * @inheritDoc
      */
     static get requires() {
-        return [NVToolsEditing] as const;
+        return [NVToolsUI] as const;
     }
 }
