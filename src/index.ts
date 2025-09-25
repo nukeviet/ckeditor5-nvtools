@@ -14,4 +14,7 @@
 export { default as NVTools } from './nvtools.js';
 export { default as NVToolsUI } from './nvtoolsui.js';
 
+export type { default as B2H2Command } from './b2h2command.js';
+export type { default as RemoveExternalLinksCommand } from './removeexternallinkscommand.js';
+
 import './augmentation.js';

@@ -9,7 +9,9 @@
 
 import type {
 	NVTools,
-	NVToolsUI
+	NVToolsUI,
+	B2H2Command,
+	RemoveExternalLinksCommand
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -17,5 +19,11 @@ declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
 		[NVTools.pluginName]: NVTools;
 		[NVToolsUI.pluginName]: NVToolsUI;
+	}
+
+	// Khai báo các command
+	interface CommandsMap {
+		b2h2: B2H2Command;
+		removeExternalLinks: RemoveExternalLinksCommand;
 	}
 }

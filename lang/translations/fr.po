@@ -11,94 +11,26 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n <= -2 || n >= 2);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-msgctxt "The URL must not be empty."
-msgid "The URL must not be empty."
-msgstr "L'URL ne doit pas être vide."
+msgctxt "Convert b to h2 tag"
+msgid "Convert b to h2 tag"
+msgstr "Convertir b en h2"
 
-msgctxt "Tip: Paste the URL into the content to embed faster."
-msgid "Tip: Paste the URL into the content to embed faster."
-msgstr "Astuce : Collez l'URL dans le contenu pour l'intégrer plus rapidement."
+msgctxt "Remove external links"
+msgid "Remove external links"
+msgstr "Supprimer les liens externes"
 
-msgctxt "Size"
-msgid "Size"
-msgstr "Taille"
+msgctxt "Close"
+msgid "Close"
+msgstr "Fermer"
 
-msgctxt "Width"
-msgid "Width"
-msgstr "Largeur"
+msgctxt "Support toolkits"
+msgid "Support toolkits"
+msgstr "Support toolkits"
 
-msgctxt "Height"
-msgid "Height"
-msgstr "Hauteur"
+msgctxt "Converted %0 b tags to h2"
+msgid "Converted %0 b tags to h2"
+msgstr "Converti %0 balises b en h2"
 
-msgctxt "Auto"
-msgid "Auto"
-msgstr "Automatique"
-
-msgctxt "Fixed"
-msgid "Fixed"
-msgstr "Fixe"
-
-msgctxt "Ratio"
-msgid "Ratio"
-msgstr "Rapport"
-
-msgctxt "In pixels"
-msgid "In pixels"
-msgstr "En pixels"
-
-msgctxt "Use the format x:y"
-msgid "Use the format x:y"
-msgstr "Utilisez le format x:y"
-
-msgctxt "Width must be greater than 0"
-msgid "Width must be greater than 0"
-msgstr "La largeur doit être supérieure à 0"
-
-msgctxt "Height must be greater than 0"
-msgid "Height must be greater than 0"
-msgstr "La hauteur doit être supérieure à 0"
-
-msgctxt "Ratio must follow the x:y format"
-msgid "Ratio must follow the x:y format"
-msgstr "Le rapport doit suivre le format x:y"
-
-msgctxt "The URL is not valid."
-msgid "The URL is not valid."
-msgstr "L'URL n'est pas valide."
-
-msgctxt "NVDocs widget"
-msgid "NVDocs widget"
-msgstr "Widget NVDocs"
-
-msgctxt "Update document"
-msgid "Update document"
-msgstr "Mettre à jour le document"
-
-msgctxt "Insert document"
-msgid "Insert document"
-msgstr "Insérer le document"
-
-msgctxt "Google Docs"
-msgid "Google Docs"
-msgstr "Google Docs"
-
-msgctxt "Microsoft Office"
-msgid "Microsoft Office"
-msgstr "Microsoft Office"
-
-msgctxt "Paste the document URL in the input."
-msgid "Paste the document URL in the input."
-msgstr "Collez l'URL du document dans le champ."
-
-msgctxt "Document URL"
-msgid "Document URL"
-msgstr "URL du document"
-
-msgctxt "Platform provider"
-msgid "Platform provider"
-msgstr "Fournisseur de plateforme"
-
-msgctxt "Browse"
-msgid "Browse"
-msgstr "Parcourir"
+msgctxt "There is no b tag in the content being edited"
+msgid "There is no b tag in the content being edited"
+msgstr "Il n'y a pas de balise b dans le contenu en cours d'édition"
