@@ -4,5 +4,7 @@
 	"Support toolkits": "Support toolkits",
 	"Close": "Close",
 	"Converted %0 b tags to h2": "Converted %0 b tags to h2",
-	"There is no b tag in the content being edited": "There is no b tag in the content being edited"
+	"There is no b tag in the content being edited": "There is no b tag in the content being edited",
+	"%0 external links have been removed": "%0 external links have been removed",
+	"There are no external links in the editing content": "There are no external links in the editing content"
 }

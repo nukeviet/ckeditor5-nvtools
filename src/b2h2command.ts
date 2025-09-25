@@ -74,6 +74,5 @@ export default class B2H2Command extends Command {
                 notification.showWarning(t('There is no b tag in the content being edited'));
             }
         }, 10);
-
     }
 }

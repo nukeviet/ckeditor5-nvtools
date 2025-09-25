@@ -34,3 +34,11 @@ msgstr "Преобразовано %0 тегов b в h2"
 msgctxt "There is no b tag in the content being edited"
 msgid "There is no b tag in the content being edited"
 msgstr "В редактируемом содержимом нет тегов b"
+
+msgctxt "%0 external links have been removed"
+msgid "%0 external links have been removed"
+msgstr "%0 внешние ссылки были удалены"
+
+msgctxt "There are no external links in the editing content"
+msgid "There are no external links in the editing content"
+msgstr "В редактируемом содержимом нет внешних ссылок"

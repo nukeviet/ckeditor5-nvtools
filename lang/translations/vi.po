@@ -34,3 +34,11 @@ msgstr "Đã chuyển %0 đoạn văn bản chứa thẻ b thành tiêu đề c�
 msgctxt "There is no b tag in the content being edited"
 msgid "There is no b tag in the content being edited"
 msgstr "Không có thẻ b nào trong nội dung đang soạn thảo"
+
+msgctxt "%0 external links have been removed"
+msgid "%0 external links have been removed"
+msgstr "%0 liên kết ngoài đã bị xóa"
+
+msgctxt "There are no external links in the editing content"
+msgid "There are no external links in the editing content"
+msgstr "Không có liên kết ngoài nào trong nội dung đang soạn thảo"

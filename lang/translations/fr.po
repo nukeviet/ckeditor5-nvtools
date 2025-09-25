@@ -34,3 +34,11 @@ msgstr "Converti %0 balises b en h2"
 msgctxt "There is no b tag in the content being edited"
 msgid "There is no b tag in the content being edited"
 msgstr "Il n'y a pas de balise b dans le contenu en cours d'édition"
+
+msgctxt "%0 external links have been removed"
+msgid "%0 external links have been removed"
+msgstr "%0 liens externes ont été supprimés"
+
+msgctxt "There are no external links in the editing content"
+msgid "There are no external links in the editing content"
+msgstr "Il n'y a pas de liens externes dans le contenu en cours d'édition"
