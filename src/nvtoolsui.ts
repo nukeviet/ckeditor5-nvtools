@@ -18,10 +18,16 @@ import {
     type Editor,
     CssTransitionDisablerMixin,
     MenuBarMenuListItemButtonView,
+    ModelElement,
     Plugin,
     Locale,
     SplitButtonView,
-    UIModel
+    UIModel,
+    ListView,
+    ListItemView,
+    View,
+    type ModelItem,
+    type DialogActionButtonDefinition
 } from 'ckeditor5';
 
 import nvtoolsIcon from '../theme/icons/tools.svg';
@@ -178,6 +184,50 @@ export default class NVToolsUI extends Plugin {
             this._formSaveExternalImageView = new (CssTransitionDisablerMixin(NVToolsSaveExternalImageFormView))(getFormSaveImgValidators(this.editor), this.editor);
         }
 
+        const images: ModelItem[] = [];
+
+        // Xử lý tìm ảnh ngoài
+        editor.model.change(writer => {
+            const root = editor.model.document.getRoot() as ModelElement;
+            const range = writer.createRangeIn(root);
+
+            for (const item of range.getItems()) {
+                if (item.is('element', 'imageInline') || item.is('element', 'imageBlock')) {
+                    const src = item.getAttribute('src') as string;
+                    if (!src) continue;
+                    // Không xử lý ảnh relative
+                    if (src.startsWith('/') && !src.startsWith('//')) {
+                        continue;
+                    }
+                    // Không xử lý ảnh nội bộ
+                    if (src.toLowerCase().startsWith(window.location.origin.toLowerCase())) {
+                        continue;
+                    }
+
+                    images.push(item);
+                }
+            }
+        });
+
+        const actionButtons: DialogActionButtonDefinition[] = [];
+        if (images.length > 0) {
+            actionButtons.push({
+                label: t('Submit'),
+                class: 'ck-button-action',
+                withText: true,
+                onExecute: () => {
+                    if (this._formSaveExternalImageView!.isValid()) {
+                        //
+                    }
+                }
+            });
+        }
+        actionButtons.push({
+            label: t('Close'),
+            withText: true,
+            onExecute: () => dialog.hide()
+        });
+
         dialog.show({
             id: 'nvtoolsSaveExternalImage',
             title: t('Save external image'),
@@ -185,14 +235,58 @@ export default class NVToolsUI extends Plugin {
             isModal: true,
             onShow: () => {
                 this._formSaveExternalImageView!.focus();
-            },
-            actionButtons: [
-                {
-                    label: t('Close'),
-                    withText: true,
-                    onExecute: () => dialog.hide()
+
+                // Xử lý nội dung
+                const dataView = this._formSaveExternalImageView!.dataView;
+                dataView.children.clear();
+
+                if (images.length == 0) {
+                    const textView = new View(editor.locale);
+                    textView.setTemplate({
+                        tag: 'span',
+                        attributes: {
+                            class: 'ck-nvtools-text-success'
+                        },
+                        children: [t('Good, there are no external images in the content being edited.')]
+                    });
+                    dataView.children.add(textView);
+                } else {
+                    const listView = new ListView(editor.locale);
+
+                    const item1 = new ListItemView(editor.locale);
+                    const item2 = new ListItemView(editor.locale);
+                    const item3 = new ListItemView(editor.locale);
+
+                    item1.setTemplate({
+                        tag: 'li',
+                        attributes: {
+                            class: 'ck-nvtools-text-warning'
+                        },
+                        children: [t('1 There are 5 images with external links in the content being edited.')]
+                    });
+                    item2.setTemplate({
+                        tag: 'li',
+                        attributes: {
+                            class: 'ck-nvtools-text-warning'
+                        },
+                        children: [t('2 There are 5 images with external links in the content being edited.')]
+                    });
+                    item3.setTemplate({
+                        tag: 'li',
+                        attributes: {
+                            class: 'ck-nvtools-text-warning'
+                        },
+                        children: [t('3 There are 5 images with external links in the content being edited.')]
+                    });
+
+                    listView.items.add(item1);
+                    listView.items.add(item2);
+                    listView.items.add(item3);
+
+                    dataView.children.add(listView);
                 }
-            ]
+            },
+            actionButtons: actionButtons
         });
     }
 }

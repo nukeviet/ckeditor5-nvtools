@@ -236,6 +236,10 @@
       }
     }
   }
+
+  .ck-nvtools-text-success {
+    color: var(--ck-color-base-action);
+  }
 }
 
 @mixin ck-media-phone {

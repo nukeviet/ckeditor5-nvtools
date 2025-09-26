@@ -52,7 +52,7 @@ export default class RemoveExternalLinksCommand extends Command {
                         continue;
                     }
                     // Không xử lý link nội bộ
-                    if (linkHref.startsWith(window.location.origin)) {
+                    if (linkHref.toLowerCase().startsWith(window.location.origin.toLowerCase())) {
                         continue;
                     }
                     countItems++;

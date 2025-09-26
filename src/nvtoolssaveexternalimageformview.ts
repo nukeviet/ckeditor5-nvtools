@@ -77,6 +77,8 @@ export class NVToolsSaveExternalImageFormView extends View {
 	 */
 	public updateNoAltOnlySwitchView: SwitchButtonView;
 
+	public dataView: FormRowView;
+
 	/**
 	 * Ô nhập prefix tên file ảnh
 	 */
@@ -106,6 +108,8 @@ export class NVToolsSaveExternalImageFormView extends View {
 	 * @param locale
 	 */
 	constructor(validators: Array<(v: NVToolsSaveExternalImageFormView) => boolean>, editor: Editor) {
+		const t = editor.locale.t!;
+
 		super(editor.locale);
 		this._validators = validators;
 
@@ -142,6 +146,9 @@ export class NVToolsSaveExternalImageFormView extends View {
 		row4.children.add(this.namePrefixInputView);
 		row4.class.push('ck-nvtools-form__row_single');
 
+		// Dòng hiển thị nội dung
+		this.dataView = new FormRowView(editor.locale);
+
 		this.setTemplate({
 			tag: 'form',
 
@@ -159,7 +166,8 @@ export class NVToolsSaveExternalImageFormView extends View {
 				row1,
 				row2,
 				row3,
-				row4
+				row4,
+				this.dataView
 			]
 		});
 	}
