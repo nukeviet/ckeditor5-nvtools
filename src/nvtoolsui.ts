@@ -15,6 +15,7 @@ import {
     FocusableView,
     type DropdownView,
     type ListDropdownItemDefinition,
+    type Editor,
     CssTransitionDisablerMixin,
     MenuBarMenuListItemButtonView,
     Plugin,
@@ -24,11 +25,17 @@ import {
 } from 'ckeditor5';
 
 import nvtoolsIcon from '../theme/icons/tools.svg';
+import b2h2Icon from '../theme/icons/b2h2.svg';
+import removeLinkIcon from '../theme/icons/remove-link.svg';
+import imageDownloadIcon from '../theme/icons/image-download.svg';
 
 import { NVToolsFormView } from './nvtoolsformview.js';
+import { NVToolsSaveExternalImageFormView } from './nvtoolssaveexternalimageformview.js';
 
 export default class NVToolsUI extends Plugin {
     private _formView: NVToolsFormView | undefined;
+
+    private _formSaveExternalImageView: NVToolsSaveExternalImageFormView | undefined;
 
     /**
      * @inheritDoc
@@ -87,27 +94,43 @@ export default class NVToolsUI extends Plugin {
         const items = new Collection<ListDropdownItemDefinition>();
 
         items.add({
-			type: 'button',
-			model: new UIModel({
-				withText: true,
-				label: t('Convert b to h2 tag'),
-                name: 'btoh2'
-			})
-		});
-		items.add({
-			type: 'button',
-			model: new UIModel({
-				withText: true,
-				label: t('Remove external links'),
-                name: 'removeexternallinks'
-			})
-		});
+            type: 'button',
+            model: new UIModel({
+                withText: true,
+                label: t('Convert b to h2 tag'),
+                name: 'btoh2',
+                icon: b2h2Icon
+            })
+        });
+        items.add({
+            type: 'button',
+            model: new UIModel({
+                withText: true,
+                label: t('Remove external links'),
+                name: 'removeexternallinks',
+                icon: removeLinkIcon
+            })
+        });
+        const uploadUrl = this.editor.config.get('simpleUpload.uploadUrl')!;
+        if (!!uploadUrl) {
+            items.add({
+                type: 'button',
+                model: new UIModel({
+                    withText: true,
+                    label: t('Save external image'),
+                    name: 'saveexternalimage',
+                    icon: imageDownloadIcon
+                })
+            });
+        }
         dropdownView.on('execute', (evt) => {
             const name = (evt.source as UIModel).name;
             if (name === 'btoh2') {
                 this.editor.execute('b2h2');
             } else if (name === 'removeexternallinks') {
                 this.editor.execute('removeExternalLinks');
+            } else if (name === 'saveexternalimage') {
+                this.showDialogSaveExternalImage();
             }
         });
 
@@ -132,7 +155,7 @@ export default class NVToolsUI extends Plugin {
             title: t('Support toolkits'),
             content: this._formView,
             isModal: true,
-            onShow: () => {},
+            onShow: () => { },
             actionButtons: [
                 {
                     label: t('Close'),
@@ -142,4 +165,55 @@ export default class NVToolsUI extends Plugin {
             ]
         });
     }
+
+    /**
+     * Hiển thị dialog lấy ảnh về máy chủ
+     */
+    public showDialogSaveExternalImage() {
+        const editor = this.editor;
+        const dialog = editor.plugins.get('Dialog');
+        const t = editor.locale.t;
+
+        if (!this._formSaveExternalImageView) {
+            this._formSaveExternalImageView = new (CssTransitionDisablerMixin(NVToolsSaveExternalImageFormView))(getFormSaveImgValidators(this.editor), this.editor);
+        }
+
+        dialog.show({
+            id: 'nvtoolsSaveExternalImage',
+            title: t('Save external image'),
+            content: this._formSaveExternalImageView,
+            isModal: true,
+            onShow: () => {
+                this._formSaveExternalImageView!.focus();
+            },
+            actionButtons: [
+                {
+                    label: t('Close'),
+                    withText: true,
+                    onExecute: () => dialog.hide()
+                }
+            ]
+        });
+    }
+}
+
+/**
+ * Các hàm kiểm tra tính hợp lệ của form
+ *
+ * @param t
+ * @returns
+ */
+function getFormSaveImgValidators(editor: Editor): Array<(v: NVToolsSaveExternalImageFormView) => boolean> {
+    const t = editor.locale.t;
+
+    return [
+        // Kiểm tra path không được để trống
+        form => {
+            if (!form.pathInputValue.length) {
+                form.pathInputView.errorText = t('The path must not be empty.');
+                return false;
+            }
+            return true;
+        }
+    ];
 }

@@ -42,3 +42,7 @@ msgstr "%0 external links have been removed"
 msgctxt "There are no external links in the editing content"
 msgid "There are no external links in the editing content"
 msgstr "There are no external links in the editing content"
+
+msgctxt "Save external image"
+msgid "Save external image"
+msgstr "Save external image"

@@ -42,3 +42,7 @@ msgstr "%0 liên kết ngoài đã bị xóa"
 msgctxt "There are no external links in the editing content"
 msgid "There are no external links in the editing content"
 msgstr "Không có liên kết ngoài nào trong nội dung đang soạn thảo"
+
+msgctxt "Save external image"
+msgid "Save external image"
+msgstr "Tải ảnh ngoài về máy chủ"
