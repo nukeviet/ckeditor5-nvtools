@@ -17,7 +17,7 @@ msgstr "Đổi thẻ b thành thẻ h2"
 
 msgctxt "Remove external links"
 msgid "Remove external links"
-msgstr "Xóa link ngoài"
+msgstr "Xóa liên kết ngoài"
 
 msgctxt "Close"
 msgid "Close"

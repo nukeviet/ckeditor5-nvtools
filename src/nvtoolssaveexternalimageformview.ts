@@ -275,6 +275,7 @@ export class NVToolsSaveExternalImageFormView extends View {
 	 * @returns ButtonView
 	 */
 	private _createBrowseButton(): LabeledFieldView<ButtonView> {
+		const editor: Editor = this.editor;
 		const t = this.locale!.t;
 		const makeButton = (labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string) => {
 			const button = new ButtonView(labeledFieldView.locale!);
@@ -287,7 +288,8 @@ export class NVToolsSaveExternalImageFormView extends View {
 				}
 			});
 			button.on('execute', () => {
-				console.log('Browse button clicked');
+				// Mở hộp thoại duyệt file
+				editor.execute('nvbox');
 			});
 
 			// Render trước để lấy cái element và gán ID vào

@@ -24,19 +24,25 @@ import {
     SplitButtonView,
     UIModel,
     ListView,
-    ListItemView,
+    SpinnerView,
+    IconView,
     View,
     type ModelItem,
-    type DialogActionButtonDefinition
+    type DialogActionButtonDefinition,
+    Dialog
 } from 'ckeditor5';
 
 import nvtoolsIcon from '../theme/icons/tools.svg';
 import b2h2Icon from '../theme/icons/b2h2.svg';
 import removeLinkIcon from '../theme/icons/remove-link.svg';
 import imageDownloadIcon from '../theme/icons/image-download.svg';
+import waitIcon from '../theme/icons/hour-glass.svg';
+import successIcon from '../theme/icons/check-circle-fill.svg';
+import errorIcon from '../theme/icons/exclamation-triangle-fill.svg';
 
 import { NVToolsFormView } from './nvtoolsformview.js';
 import { NVToolsSaveExternalImageFormView } from './nvtoolssaveexternalimageformview.js';
+import { ElementView } from './ElementView.js';
 
 export default class NVToolsUI extends Plugin {
     private _formView: NVToolsFormView | undefined;
@@ -233,7 +239,9 @@ export default class NVToolsUI extends Plugin {
             title: t('Save external image'),
             content: this._formSaveExternalImageView,
             isModal: true,
-            onShow: () => {
+            onShow: (dlg: Dialog) => {
+                dlg.view?.element?.classList.add('ck-nvtools-dialog', 'ck-nvtools-save-external-image');
+
                 this._formSaveExternalImageView!.focus();
 
                 // Xử lý nội dung
@@ -252,47 +260,157 @@ export default class NVToolsUI extends Plugin {
                     dataView.children.add(textView);
                 } else {
                     const listView = new ListView(editor.locale);
-
-                    const item1 = new ListItemView(editor.locale);
-                    const item2 = new ListItemView(editor.locale);
-                    const item3 = new ListItemView(editor.locale);
-
-                    item1.setTemplate({
-                        tag: 'li',
+                    listView.items.addMany(listExternalImages(editor, images));
+                    listView.extendTemplate({
                         attributes: {
-                            class: 'ck-nvtools-text-warning'
-                        },
-                        children: [t('1 There are 5 images with external links in the content being edited.')]
+                            class: ['ck-nvtools-external-image-list']
+                        }
                     });
-                    item2.setTemplate({
-                        tag: 'li',
-                        attributes: {
-                            class: 'ck-nvtools-text-warning'
-                        },
-                        children: [t('2 There are 5 images with external links in the content being edited.')]
-                    });
-                    item3.setTemplate({
-                        tag: 'li',
-                        attributes: {
-                            class: 'ck-nvtools-text-warning'
-                        },
-                        children: [t('3 There are 5 images with external links in the content being edited.')]
-                    });
-
-                    listView.items.add(item1);
-                    listView.items.add(item2);
-                    listView.items.add(item3);
-
                     dataView.children.add(listView);
                 }
             },
             actionButtons: actionButtons
         });
     }
+
+    public setExternalImagePath(path: string) {
+        if (this._formSaveExternalImageView) {
+            this._formSaveExternalImageView.pathInputValue = path;
+        }
+    }
 }
 
 /**
- * Các hàm kiểm tra tính hợp lệ của form
+ * Hàm viết danh sách ảnh ngoài ra
+ *
+ * @param editor
+ * @param images
+ * @returns
+ */
+function listExternalImages(editor: Editor, images: ModelItem[]): ElementView[] {
+    const locale = editor.locale;
+    const t = locale.t;
+
+    const items: ElementView[] = [];
+    images.forEach(image => {
+        const liView = new ElementView(locale);
+
+        const col1View = new ElementView(locale);
+        const col2View = new ElementView(locale);
+        const col3View = new ElementView(locale);
+
+        const imgShowView = new ElementView(locale);
+        const imgBgView = new ElementView(locale);
+        const srcView = new ElementView(locale);
+        const altView = new ElementView(locale);
+
+        const statusWaitView = new IconView();
+        const statusSuccessView = new IconView();
+        const statusProcessingView = new SpinnerView();
+        const statusErrorView = new IconView();
+
+        const alt: string = (image.hasAttribute('alt') ? (image.getAttribute('alt') as string) : '').trim();
+
+        imgShowView.setTemplate({
+            tag: 'img',
+            attributes: {
+                src: image.getAttribute('src') as string,
+                alt: alt,
+                class: ['ck-nvtools-external-image-thumb-show']
+            }
+        });
+        imgBgView.setTemplate({
+            tag: 'img',
+            attributes: {
+                src: image.getAttribute('src') as string,
+                alt: alt,
+                class: ['ck-nvtools-external-image-thumb-bg'],
+                style: {
+                    backgroundImage: `url(${image.getAttribute('src')})`
+                }
+            }
+        });
+        srcView.setTemplate({
+            tag: 'div',
+            children: [image.getAttribute('src') as string],
+            attributes: {
+                class: ['ck-nvtools-external-image-src']
+            }
+        });
+
+        if (!!alt) {
+            altView.setTemplate({
+                tag: 'div',
+                children: [alt],
+                attributes: {
+                    class: ['ck-nvtools-external-image-alt']
+                }
+            });
+        } else {
+            altView.setTemplate({
+                tag: 'div',
+                children: ['No alt text'],
+                attributes: {
+                    class: ['ck-nvtools-external-image-alt-none']
+                }
+            });
+        }
+
+        statusWaitView.content = waitIcon;
+        statusSuccessView.content = successIcon;
+        statusSuccessView.extendTemplate({
+            attributes: {
+                class: ['ck-nvtools-icon-success']
+            }
+        });
+        statusErrorView.content = errorIcon;
+        statusErrorView.extendTemplate({
+            attributes: {
+                class: ['ck-nvtools-icon-error']
+            }
+        });
+
+        statusProcessingView.isVisible = false;
+        statusWaitView.isVisible = true;
+        statusSuccessView.isVisible = false;
+        statusErrorView.isVisible = false;
+
+        col1View.setTemplate({
+            tag: 'div',
+            children: [imgBgView, imgShowView],
+            attributes: {
+                class: ['ck-nvtools-external-image-thumb']
+            }
+        });
+        col2View.setTemplate({
+            tag: 'div',
+            children: [srcView, altView],
+            attributes: {
+                class: ['ck-nvtools-external-image-info']
+            }
+        });
+        col3View.setTemplate({
+            tag: 'div',
+            children: [statusProcessingView, statusWaitView, statusSuccessView, statusErrorView],
+            attributes: {
+                class: ['ck-nvtools-external-image-status']
+            }
+        });
+
+        liView.setTemplate({
+            tag: 'li',
+            children: [col1View, col2View, col3View],
+            attributes: {
+                class: ['ck-nvtools-external-image-item']
+            }
+        });
+        items.push(liView);
+    });
+    return items;
+}
+
+/**
+ * Các hàm kiểm tra tính hợp lệ của form tải ảnh về máy chủ
  *
  * @param t
  * @returns
