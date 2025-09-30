@@ -49,6 +49,12 @@ export default class NVToolsUI extends Plugin {
 
     private _formSaveExternalImageView: NVToolsSaveExternalImageFormView | undefined;
 
+    private _saveExternalImageIsRun: boolean = false;
+    private _saveExternalImageTimerRun: number = 0;
+    private _saveExternalImageOffset: number = 0;
+    private _images: ModelItem[] = [];
+    private _imagesElement: ExternalImagesElementStatus[] = [];
+
     /**
      * @inheritDoc
      */
@@ -179,6 +185,172 @@ export default class NVToolsUI extends Plugin {
     }
 
     /**
+     * Hàm viết danh sách ảnh ngoài ra
+     *
+     * @param editor
+     * @param images
+     * @returns
+     */
+    private _listExternalImages(): ElementView[] {
+        const locale = this.editor.locale;
+        const t = locale.t;
+
+        this._imagesElement = [];
+        const images: ElementView[] = [];
+
+        this._images.forEach(image => {
+            const liView = new ElementView(locale);
+
+            const col1View = new ElementView(locale);
+            const col2View = new ElementView(locale);
+            const col3View = new ElementView(locale);
+
+            const imgShowView = new ElementView(locale);
+            const imgBgView = new ElementView(locale);
+            const srcView = new ElementView(locale);
+            const altView = new ElementView(locale);
+
+            const statusWaitView = new IconView();
+            const statusSuccessView = new IconView();
+            const statusProcessingView = new SpinnerView();
+            const statusErrorView = new IconView();
+
+            const alt: string = (image.hasAttribute('alt') ? (image.getAttribute('alt') as string) : '').trim();
+
+            imgShowView.setTemplate({
+                tag: 'img',
+                attributes: {
+                    src: image.getAttribute('src') as string,
+                    alt: alt,
+                    class: ['ck-nvtools-external-image-thumb-show']
+                }
+            });
+            imgBgView.setTemplate({
+                tag: 'img',
+                attributes: {
+                    src: image.getAttribute('src') as string,
+                    alt: alt,
+                    class: ['ck-nvtools-external-image-thumb-bg'],
+                    style: {
+                        backgroundImage: `url(${image.getAttribute('src')})`
+                    }
+                }
+            });
+            srcView.setTemplate({
+                tag: 'div',
+                children: [image.getAttribute('src') as string],
+                attributes: {
+                    class: ['ck-nvtools-external-image-src']
+                }
+            });
+
+            if (!!alt) {
+                altView.setTemplate({
+                    tag: 'div',
+                    children: [alt],
+                    attributes: {
+                        class: ['ck-nvtools-external-image-alt']
+                    }
+                });
+            } else {
+                altView.setTemplate({
+                    tag: 'div',
+                    children: ['No alt text'],
+                    attributes: {
+                        class: ['ck-nvtools-external-image-alt-none']
+                    }
+                });
+            }
+
+            statusWaitView.content = waitIcon;
+            statusSuccessView.content = successIcon;
+            statusSuccessView.extendTemplate({
+                attributes: {
+                    class: ['ck-nvtools-icon-success']
+                }
+            });
+            statusErrorView.content = errorIcon;
+            statusErrorView.extendTemplate({
+                attributes: {
+                    class: ['ck-nvtools-icon-error']
+                }
+            });
+
+            statusProcessingView.isVisible = false;
+            statusWaitView.isVisible = true;
+            statusSuccessView.isVisible = false;
+            statusErrorView.isVisible = false;
+
+            col1View.setTemplate({
+                tag: 'div',
+                children: [imgBgView, imgShowView],
+                attributes: {
+                    class: ['ck-nvtools-external-image-thumb']
+                }
+            });
+            col2View.setTemplate({
+                tag: 'div',
+                children: [srcView, altView],
+                attributes: {
+                    class: ['ck-nvtools-external-image-info']
+                }
+            });
+            col3View.setTemplate({
+                tag: 'div',
+                children: [statusProcessingView, statusWaitView, statusSuccessView, statusErrorView],
+                attributes: {
+                    class: ['ck-nvtools-external-image-status']
+                }
+            });
+
+            liView.setTemplate({
+                tag: 'li',
+                children: [col1View, col2View, col3View],
+                attributes: {
+                    class: ['ck-nvtools-external-image-item']
+                }
+            });
+            this._imagesElement.push({
+                wait: statusWaitView,
+                success: statusSuccessView,
+                processing: statusProcessingView,
+                error: statusErrorView
+            });
+            images.push(liView);
+        });
+        return images;
+    }
+
+    /**
+     * Hàm xử lý chạy lưu ảnh ngoài
+     * @returns void
+     */
+    private _saveExternalImageRun(): void {
+        if (!this._saveExternalImageIsRun) return;
+
+        const imageStatus: ExternalImagesElementStatus = this._imagesElement[this._saveExternalImageOffset];
+        this._saveExternalImageOffset++;
+
+        console.log('Processing image ' + this._saveExternalImageOffset + '/' + this._imagesElement.length);
+        imageStatus.wait.isVisible = false;
+        imageStatus.processing.isVisible = true;
+        setTimeout(() => {
+            imageStatus.processing.isVisible = false;
+            imageStatus.success.isVisible = true;
+        }, 500);
+
+        if (this._saveExternalImageOffset < this._imagesElement.length) {
+            this._saveExternalImageTimerRun = setTimeout(() => {
+                this._saveExternalImageRun();
+            }, 1000);
+            return;
+        }
+
+        console.log('Done');
+        this._saveExternalImageIsRun = false;
+    }
+
+    /**
      * Hiển thị dialog lấy ảnh về máy chủ
      */
     public showDialogSaveExternalImage() {
@@ -190,7 +362,7 @@ export default class NVToolsUI extends Plugin {
             this._formSaveExternalImageView = new (CssTransitionDisablerMixin(NVToolsSaveExternalImageFormView))(getFormSaveImgValidators(this.editor), this.editor);
         }
 
-        const images: ModelItem[] = [];
+        this._images = [];
 
         // Xử lý tìm ảnh ngoài
         editor.model.change(writer => {
@@ -210,20 +382,31 @@ export default class NVToolsUI extends Plugin {
                         continue;
                     }
 
-                    images.push(item);
+                    this._images.push(item);
                 }
             }
         });
 
         const actionButtons: DialogActionButtonDefinition[] = [];
-        if (images.length > 0) {
+        if (this._images.length > 0) {
             actionButtons.push({
                 label: t('Submit'),
                 class: 'ck-button-action',
                 withText: true,
                 onExecute: () => {
+                    // Đang chạy thì thôi
+                    if (this._saveExternalImageIsRun) return;
+
                     if (this._formSaveExternalImageView!.isValid()) {
-                        //
+                        this._formSaveExternalImageView!.pathInputView.isEnabled = false;
+                        this._formSaveExternalImageView!.browseButtonView.fieldView.isEnabled = false;
+                        this._formSaveExternalImageView!.altInputView.isEnabled = false;
+                        this._formSaveExternalImageView!.updateNoAltOnlySwitchView.isEnabled = false;
+                        this._formSaveExternalImageView!.namePrefixInputView.isEnabled = false;
+
+                        this._saveExternalImageIsRun = true;
+                        this._saveExternalImageOffset = 0;
+                        this._saveExternalImageRun();
                     }
                 }
             });
@@ -248,7 +431,7 @@ export default class NVToolsUI extends Plugin {
                 const dataView = this._formSaveExternalImageView!.dataView;
                 dataView.children.clear();
 
-                if (images.length == 0) {
+                if (this._images.length == 0) {
                     const textView = new View(editor.locale);
                     textView.setTemplate({
                         tag: 'span',
@@ -260,7 +443,7 @@ export default class NVToolsUI extends Plugin {
                     dataView.children.add(textView);
                 } else {
                     const listView = new ListView(editor.locale);
-                    listView.items.addMany(listExternalImages(editor, images));
+                    listView.items.addMany(this._listExternalImages());
                     listView.extendTemplate({
                         attributes: {
                             class: ['ck-nvtools-external-image-list']
@@ -269,7 +452,14 @@ export default class NVToolsUI extends Plugin {
                     dataView.children.add(listView);
                 }
             },
-            actionButtons: actionButtons
+            actionButtons: actionButtons,
+            onHide: () => {
+                this._saveExternalImageIsRun = true;
+                if (this._saveExternalImageTimerRun) {
+                    window.clearTimeout(this._saveExternalImageTimerRun);
+                    this._saveExternalImageTimerRun = 0;
+                }
+            }
         });
     }
 
@@ -281,137 +471,9 @@ export default class NVToolsUI extends Plugin {
     public setExternalImagePath(path: string) {
         if (this._formSaveExternalImageView) {
             this._formSaveExternalImageView.path = path;
+            this._formSaveExternalImageView.resetFormStatus();
         }
     }
-}
-
-/**
- * Hàm viết danh sách ảnh ngoài ra
- *
- * @param editor
- * @param images
- * @returns
- */
-function listExternalImages(editor: Editor, images: ModelItem[]): ElementView[] {
-    const locale = editor.locale;
-    const t = locale.t;
-
-    const items: ElementView[] = [];
-    images.forEach(image => {
-        const liView = new ElementView(locale);
-
-        const col1View = new ElementView(locale);
-        const col2View = new ElementView(locale);
-        const col3View = new ElementView(locale);
-
-        const imgShowView = new ElementView(locale);
-        const imgBgView = new ElementView(locale);
-        const srcView = new ElementView(locale);
-        const altView = new ElementView(locale);
-
-        const statusWaitView = new IconView();
-        const statusSuccessView = new IconView();
-        const statusProcessingView = new SpinnerView();
-        const statusErrorView = new IconView();
-
-        const alt: string = (image.hasAttribute('alt') ? (image.getAttribute('alt') as string) : '').trim();
-
-        imgShowView.setTemplate({
-            tag: 'img',
-            attributes: {
-                src: image.getAttribute('src') as string,
-                alt: alt,
-                class: ['ck-nvtools-external-image-thumb-show']
-            }
-        });
-        imgBgView.setTemplate({
-            tag: 'img',
-            attributes: {
-                src: image.getAttribute('src') as string,
-                alt: alt,
-                class: ['ck-nvtools-external-image-thumb-bg'],
-                style: {
-                    backgroundImage: `url(${image.getAttribute('src')})`
-                }
-            }
-        });
-        srcView.setTemplate({
-            tag: 'div',
-            children: [image.getAttribute('src') as string],
-            attributes: {
-                class: ['ck-nvtools-external-image-src']
-            }
-        });
-
-        if (!!alt) {
-            altView.setTemplate({
-                tag: 'div',
-                children: [alt],
-                attributes: {
-                    class: ['ck-nvtools-external-image-alt']
-                }
-            });
-        } else {
-            altView.setTemplate({
-                tag: 'div',
-                children: ['No alt text'],
-                attributes: {
-                    class: ['ck-nvtools-external-image-alt-none']
-                }
-            });
-        }
-
-        statusWaitView.content = waitIcon;
-        statusSuccessView.content = successIcon;
-        statusSuccessView.extendTemplate({
-            attributes: {
-                class: ['ck-nvtools-icon-success']
-            }
-        });
-        statusErrorView.content = errorIcon;
-        statusErrorView.extendTemplate({
-            attributes: {
-                class: ['ck-nvtools-icon-error']
-            }
-        });
-
-        statusProcessingView.isVisible = false;
-        statusWaitView.isVisible = true;
-        statusSuccessView.isVisible = false;
-        statusErrorView.isVisible = false;
-
-        col1View.setTemplate({
-            tag: 'div',
-            children: [imgBgView, imgShowView],
-            attributes: {
-                class: ['ck-nvtools-external-image-thumb']
-            }
-        });
-        col2View.setTemplate({
-            tag: 'div',
-            children: [srcView, altView],
-            attributes: {
-                class: ['ck-nvtools-external-image-info']
-            }
-        });
-        col3View.setTemplate({
-            tag: 'div',
-            children: [statusProcessingView, statusWaitView, statusSuccessView, statusErrorView],
-            attributes: {
-                class: ['ck-nvtools-external-image-status']
-            }
-        });
-
-        liView.setTemplate({
-            tag: 'li',
-            children: [col1View, col2View, col3View],
-            attributes: {
-                class: ['ck-nvtools-external-image-item']
-            }
-        });
-        items.push(liView);
-    });
-    return items;
 }
 
 /**
@@ -445,3 +507,10 @@ function getFormSaveImgValidators(editor: Editor): Array<(v: NVToolsSaveExternal
         }
     ];
 }
+
+type ExternalImagesElementStatus = {
+    wait: IconView;
+    success: IconView;
+    processing: SpinnerView;
+    error: IconView;
+};
