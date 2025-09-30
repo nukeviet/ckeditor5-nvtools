@@ -273,9 +273,14 @@ export default class NVToolsUI extends Plugin {
         });
     }
 
+    /**
+     * Đặt đường dẫn lưu ảnh ngoài vào dialog
+     *
+     * @param path
+     */
     public setExternalImagePath(path: string) {
         if (this._formSaveExternalImageView) {
-            this._formSaveExternalImageView.pathInputValue = path;
+            this._formSaveExternalImageView.path = path;
         }
     }
 }
@@ -419,10 +424,21 @@ function getFormSaveImgValidators(editor: Editor): Array<(v: NVToolsSaveExternal
     const t = editor.locale.t;
 
     return [
-        // Kiểm tra path không được để trống
+        // Kiểm tra path
         form => {
+            // Không trống
             if (!form.pathInputValue.length) {
                 form.pathInputView.errorText = t('The path must not be empty.');
+                return false;
+            }
+            // Phải bắt đầu bằng / và kết thúc dạng .ext, chỉ chứa các ký tự a-z, A-Z, 0-9, -, _, /, .
+            if (!form.pathInputValue.match(/^\/[a-zA-Z0-9\-_/\.]+(\.[a-zA-Z0-9]+)+$/)) {
+                form.pathInputView.errorText = t('Invalid file path');
+                return false;
+            }
+            // Không được chứa //
+            if (form.pathInputValue.indexOf('//') >= 0) {
+                form.pathInputView.errorText = t('Invalid file path');
                 return false;
             }
             return true;

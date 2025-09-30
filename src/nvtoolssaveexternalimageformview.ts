@@ -209,6 +209,21 @@ export class NVToolsSaveExternalImageFormView extends View {
 	}
 
 	/**
+	 * Get the path in the path input.
+	 */
+	public get path(): string {
+		return this.pathInputView.fieldView.element!.value.trim();
+	}
+
+	/**
+	 * @param path The path to set.
+	 */
+	public set path(path: string) {
+		this.pathInputView.fieldView.value = path.trim();
+		this.pathInputValue = this.pathInputView.fieldView.value;
+	}
+
+	/**
 	 * Kiểm tra tính hợp lệ của form.
 	 *
 	 * @returns true|false
