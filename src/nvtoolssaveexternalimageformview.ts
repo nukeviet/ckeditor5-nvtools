@@ -224,6 +224,51 @@ export class NVToolsSaveExternalImageFormView extends View {
 	}
 
 	/**
+	 * Get the alt text in the alt input.
+	 */
+	public get alt(): string {
+		return this.altInputView.fieldView.element!.value.trim();
+	}
+
+	/**
+	 * @param alt The alt text to set.
+	 */
+	public set alt(alt: string) {
+		this.altInputView.fieldView.value = alt.trim();
+		this.altInputValue = this.altInputView.fieldView.value;
+	}
+
+	/**
+	 * Get the alt text in the alt input.
+	 */
+	public get prefix(): string {
+		return this.namePrefixInputView.fieldView.element!.value.trim();
+	}
+
+	/**
+	 * @param prefix The prefix text to set.
+	 */
+	public set prefix(prefix: string) {
+		this.namePrefixInputView.fieldView.value = prefix.trim();
+		this.namePrefixInputValue = this.namePrefixInputView.fieldView.value;
+	}
+
+	/**
+	 * Get the value of the "only update alt text for images without it" checkbox.
+	 */
+	public get altOnly(): boolean {
+		return this.updateNoAltOnlySwitchView.isOn;
+	}
+
+	/**
+	 * @param altOnly The value to set.
+	 */
+	public set altOnly(altOnly: boolean) {
+		this.updateNoAltOnlySwitchView.isOn = altOnly;
+		this.updateNoAltOnlyCheckboxValue = this.updateNoAltOnlySwitchView.isOn;
+	}
+
+	/**
 	 * Kiểm tra tính hợp lệ của form.
 	 *
 	 * @returns true|false
@@ -240,6 +285,28 @@ export class NVToolsSaveExternalImageFormView extends View {
 		}
 
 		return errorNumber === 0;
+	}
+
+	/**
+	 * Vô hiệu hóa form
+	 */
+	public disableForm(): void {
+		this.pathInputView.isEnabled = false;
+		this.browseButtonView.fieldView.isEnabled = false;
+		this.altInputView.isEnabled = false;
+		this.updateNoAltOnlySwitchView.isEnabled = false;
+		this.namePrefixInputView.isEnabled = false;
+	}
+
+	/**
+	 * Kích hoạt form
+	 */
+	public enableForm(): void {
+		this.pathInputView.isEnabled = true;
+		this.browseButtonView.fieldView.isEnabled = true;
+		this.altInputView.isEnabled = true;
+		this.updateNoAltOnlySwitchView.isEnabled = true;
+		this.namePrefixInputView.isEnabled = true;
 	}
 
 	/**

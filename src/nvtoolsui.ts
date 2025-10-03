@@ -44,7 +44,10 @@ import { NVToolsFormView } from './nvtoolsformview.js';
 import { NVToolsSaveExternalImageFormView } from './nvtoolssaveexternalimageformview.js';
 import { ElementView } from './ElementView.js';
 
+declare const nv_base_siteurl: string | undefined;
+
 export default class NVToolsUI extends Plugin {
+
     private _formView: NVToolsFormView | undefined;
 
     private _formSaveExternalImageView: NVToolsSaveExternalImageFormView | undefined;
@@ -314,7 +317,11 @@ export default class NVToolsUI extends Plugin {
                 wait: statusWaitView,
                 success: statusSuccessView,
                 processing: statusProcessingView,
-                error: statusErrorView
+                error: statusErrorView,
+                imageUrl: image.getAttribute('src') as string,
+                imageAlt: alt,
+                statusContainer: col3View,
+                completed: false
             });
             images.push(liView);
         });
@@ -322,32 +329,180 @@ export default class NVToolsUI extends Plugin {
     }
 
     /**
+     * Lấy đường dẫn thư mục chứa file
+     * @param p Đường dẫn file
+     * @returns Đường dẫn thư mục
+     */
+    private _dirname(p: string): string {
+        const i = p.lastIndexOf("/");
+        if (i === -1) return "/";
+        if (i === 0) return "/";
+        return p.slice(0, i);
+    }
+
+    /**
+     * Cập nhật đường dẫn upload
+     *
+     * @param url Đường dẫn upload
+     * @param newPath Đường dẫn mới
+     * @returns Đường dẫn upload đã được cập nhật
+     */
+    private _updateUploadUrl(url: string, newPath: string): string {
+        // Nếu là NukeViet, xử lý biến newPath
+        if (typeof nv_base_siteurl !== 'undefined' && newPath.startsWith(nv_base_siteurl)) {
+            newPath = '/' + newPath.slice(nv_base_siteurl.length);
+        }
+        newPath = this._dirname(newPath);
+
+        const base = window.location.origin;
+        const u = new URL(url, base);
+
+        if (u.searchParams.has('path')) {
+            // Nếu có sẵn path thì đổi giá trị
+            u.searchParams.set('path', newPath);
+        } else {
+            // Nếu chưa có path thì thêm
+            u.searchParams.append('path', newPath);
+        }
+
+        // Trả về lại chuỗi, bỏ base đi
+        return u.pathname + "?" + u.searchParams.toString();
+    }
+
+    /**
+     * Hàm upload ảnh từ url
+     *
+     * @param imageUrl Đường dẫn ảnh
+     * @param imageAlt Chú thích ảnh
+     * @returns
+     */
+    private _uploadRemote(imageUrl: string, imageAlt: string): Promise<UploadResponse> {
+        return new Promise((resolve, reject) => {
+            const uploadConfig = this.editor.config.get('simpleUpload')!;
+            if (!uploadConfig.uploadUrl) {
+                reject('The uploadUrl configuration is not set.');
+            }
+
+            const path: string | undefined = this._formSaveExternalImageView?.path;
+            const alt: string | undefined = this._formSaveExternalImageView?.alt;
+            const prefix: string | undefined = this._formSaveExternalImageView?.prefix;
+            // const altOnly: boolean | undefined = this._formSaveExternalImageView?.altOnly;
+
+            const postUrl = this._updateUploadUrl(uploadConfig.uploadUrl, path as string);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', postUrl, true);
+            xhr.responseType = 'json';
+
+            const genericErrorText = 'Couldn\'t upload file:' + ` ${imageUrl}.`;
+
+            xhr.addEventListener('error', () => reject(genericErrorText));
+            xhr.addEventListener('abort', () => reject());
+            xhr.addEventListener('load', () => {
+                const response = xhr.response;
+
+                if (!response || response.error) {
+                    return reject(response && response.error && response.error.message ? response.error.message : genericErrorText);
+                }
+                const urls = response.url ? { default: response.url } : response.urls;
+                resolve({
+                    ...response,
+                    urls
+                });
+            });
+
+            let headers = (uploadConfig.headers || {}) as Record<string, string>;
+            const withCredentials = uploadConfig.withCredentials || false;
+            for (const headerName of Object.keys(headers)) {
+                xhr.setRequestHeader(headerName, headers[headerName]);
+            }
+            xhr.withCredentials = withCredentials;
+            const data = new FormData();
+            data.append('urlfile', imageUrl);
+            if (!!alt) {
+                data.append('filealt', alt);
+            }
+            if (!!prefix) {
+                data.append('newfilename', prefix);
+            }
+            xhr.send(data);
+        });
+    }
+
+    /**
      * Hàm xử lý chạy lưu ảnh ngoài
      * @returns void
      */
-    private _saveExternalImageRun(): void {
+    private async _saveExternalImageRun(): Promise<void> {
+        const editor = this.editor;
         if (!this._saveExternalImageIsRun) return;
 
-        const imageStatus: ExternalImagesElementStatus = this._imagesElement[this._saveExternalImageOffset];
+        const index = this._saveExternalImageOffset;
+        const imageStatus: ExternalImagesElementStatus = this._imagesElement[index];
+        const image = this._images[index] as ModelElement;
+
         this._saveExternalImageOffset++;
+        let timerAmount = 0;
 
-        console.log('Processing image ' + this._saveExternalImageOffset + '/' + this._imagesElement.length);
-        imageStatus.wait.isVisible = false;
-        imageStatus.processing.isVisible = true;
-        setTimeout(() => {
-            imageStatus.processing.isVisible = false;
-            imageStatus.success.isVisible = true;
-        }, 500);
+        if (!imageStatus.completed) {
+            timerAmount = 500;
 
+            // Loader show
+            imageStatus.wait.isVisible = false;
+            imageStatus.error.isVisible = false;
+            imageStatus.processing.isVisible = true;
+            imageStatus.statusContainer.element!.removeAttribute('title');
+
+            const alt: string | undefined = this._formSaveExternalImageView?.alt;
+            const altOnly: boolean | undefined = this._formSaveExternalImageView?.altOnly;
+
+            try {
+                const uploadInfo = await this._uploadRemote(imageStatus.imageUrl, imageStatus.imageAlt);
+                editor.model.change(writer => {
+                    writer.setAttribute('src', uploadInfo.url, image);
+
+                    // Thay đổi alt nếu có chọn và có alt
+                    if (!!alt && (!altOnly || (altOnly && !imageStatus.imageAlt.length))) {
+                        writer.setAttribute('alt', `${alt} ${index}`, image);
+                    }
+                });
+                imageStatus.processing.isVisible = false;
+                imageStatus.success.isVisible = true;
+
+                // Đánh dấu ảnh này đã hoàn thành
+                imageStatus.completed = true;
+                this._imagesElement[index].completed = true;
+            } catch (error) {
+                // XMLHttpRequest reject nên lỗi gì sẽ vào đây kể cả lỗi từ server trả về
+                imageStatus.processing.isVisible = false;
+                imageStatus.error.isVisible = true;
+                imageStatus.statusContainer.element!.setAttribute('title', (error as string) || 'Error uploading image');
+            }
+        } else {
+            // Nếu ảnh đã hoàn thành thì không làm gì cả
+            timerAmount = 1;
+        }
+
+        // Tiếp tục xử lý ảnh kế tiếp sau timerAmount
         if (this._saveExternalImageOffset < this._imagesElement.length) {
             this._saveExternalImageTimerRun = setTimeout(() => {
                 this._saveExternalImageRun();
-            }, 1000);
+            }, timerAmount);
             return;
         }
 
-        console.log('Done');
+        // Đã chạy qua tất cả các ảnh
         this._saveExternalImageIsRun = false;
+        const dialog: Dialog = editor.plugins.get('Dialog');
+        const submitButton = dialog.view?.actionsView?.children.get(0) as ButtonView;
+        const t = editor.locale.t;
+
+        const imgCompleted = this._imagesElement.filter(i => i.completed).length;
+        if (imgCompleted === this._imagesElement.length) {
+            submitButton.label = t('Complete');
+        } else {
+            submitButton.label = t('Retry');
+        }
+        this._formSaveExternalImageView!.enableForm();
     }
 
     /**
@@ -397,13 +552,16 @@ export default class NVToolsUI extends Plugin {
                     // Đang chạy thì thôi
                     if (this._saveExternalImageIsRun) return;
 
-                    if (this._formSaveExternalImageView!.isValid()) {
-                        this._formSaveExternalImageView!.pathInputView.isEnabled = false;
-                        this._formSaveExternalImageView!.browseButtonView.fieldView.isEnabled = false;
-                        this._formSaveExternalImageView!.altInputView.isEnabled = false;
-                        this._formSaveExternalImageView!.updateNoAltOnlySwitchView.isEnabled = false;
-                        this._formSaveExternalImageView!.namePrefixInputView.isEnabled = false;
+                    // Đã hoàn thành rồi thì đóng Dialog
+                    const submitButton = dialog.view?.actionsView?.children.get(0) as ButtonView;
+                    if (submitButton.label === t('Complete')) {
+                        dialog.hide();
+                        return;
+                    }
 
+                    // Check form hợp lệ thì bắt đầu
+                    if (this._formSaveExternalImageView!.isValid()) {
+                        this._formSaveExternalImageView!.disableForm();
                         this._saveExternalImageIsRun = true;
                         this._saveExternalImageOffset = 0;
                         this._saveExternalImageRun();
@@ -425,6 +583,7 @@ export default class NVToolsUI extends Plugin {
             onShow: (dlg: Dialog) => {
                 dlg.view?.element?.classList.add('ck-nvtools-dialog', 'ck-nvtools-save-external-image');
 
+                this._formSaveExternalImageView!.enableForm();
                 this._formSaveExternalImageView!.focus();
 
                 // Xử lý nội dung
@@ -513,4 +672,15 @@ type ExternalImagesElementStatus = {
     success: IconView;
     processing: SpinnerView;
     error: IconView;
+    imageUrl: string;
+    imageAlt: string;
+    statusContainer: ElementView;
+    completed: boolean;
+};
+
+type UploadResponse = {
+    url?: string;
+    error?: {
+        message: string;
+    };
 };

@@ -7,5 +7,18 @@
 	"There is no b tag in the content being edited": "There is no b tag in the content being edited",
 	"%0 external links have been removed": "%0 external links have been removed",
 	"There are no external links in the editing content": "There are no external links in the editing content",
-	"Save external image": "Save external image"
+	"Save external image": "Save external image",
+	"Enter or browse to pick any file at the target location.": "Enter or browse to pick any file at the target location.",
+	"Folder to save": "Folder to save",
+	"Browse": "Browse",
+	"Image alt text": "Image alt text",
+	"Only update alt text for images without it": "Only update alt text for images without it",
+	"Leave empty to use the original name.": "Leave empty to use the original name.",
+	"Image filename prefix": "Image filename prefix",
+	"Complete": "Complete",
+	"Retry": "Retry",
+	"Submit": "Submit",
+	"Good, there are no external images in the content being edited.": "Good, there are no external images in the content being edited.",
+	"Invalid file path": "Invalid file path",
+	"The path must not be empty.": "The path must not be empty."
 }

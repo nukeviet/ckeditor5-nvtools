@@ -46,3 +46,55 @@ msgstr "Il n'y a pas de liens externes dans le contenu en cours d'édition"
 msgctxt "Save external image"
 msgid "Save external image"
 msgstr "Enregistrer l'image externe"
+
+msgctxt "Enter or browse to pick any file at the target location."
+msgid "Enter or browse to pick any file at the target location."
+msgstr "Entrez ou parcourez pour choisir un fichier à l'emplacement cible."
+
+msgctxt "Folder to save"
+msgid "Folder to save"
+msgstr "Dossier à enregistrer"
+
+msgctxt "Browse"
+msgid "Browse"
+msgstr "Parcourir"
+
+msgctxt "Image alt text"
+msgid "Image alt text"
+msgstr "Texte alternatif de l'image"
+
+msgctxt "Only update alt text for images without it"
+msgid "Only update alt text for images without it"
+msgstr "Mettre à jour uniquement le texte alternatif des images sans"
+
+msgctxt "Leave empty to use the original name."
+msgid "Leave empty to use the original name."
+msgstr "Laisser vide pour utiliser le nom d'origine."
+
+msgctxt "Image filename prefix"
+msgid "Image filename prefix"
+msgstr "Préfixe du nom de fichier de l'image"
+
+msgctxt "Complete"
+msgid "Complete"
+msgstr "Terminer"
+
+msgctxt "Retry"
+msgid "Retry"
+msgstr "Réessayer"
+
+msgctxt "Submit"
+msgid "Submit"
+msgstr "Soumettre"
+
+msgctxt "Good, there are no external images in the content being edited."
+msgid "Good, there are no external images in the content being edited."
+msgstr "Bien, il n'y a pas d'images externes dans le contenu en cours d'édition."
+
+msgctxt "Invalid file path"
+msgid "Invalid file path"
+msgstr "Chemin de fichier invalide"
+
+msgctxt "The path must not be empty."
+msgid "The path must not be empty."
+msgstr "Le chemin ne doit pas être vide."

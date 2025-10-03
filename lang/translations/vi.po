@@ -46,3 +46,55 @@ msgstr "Không có liên kết ngoài nào trong nội dung đang soạn thảo"
 msgctxt "Save external image"
 msgid "Save external image"
 msgstr "Tải ảnh ngoài về máy chủ"
+
+msgctxt "Enter or browse to pick any file at the target location."
+msgid "Enter or browse to pick any file at the target location."
+msgstr "Nhập hoặc duyệt để chọn bất kỳ tệp nào tại thư mục cần lưu."
+
+msgctxt "Folder to save"
+msgid "Folder to save"
+msgstr "Thư mục lưu"
+
+msgctxt "Browse"
+msgid "Browse"
+msgstr "Duyệt"
+
+msgctxt "Image alt text"
+msgid "Image alt text"
+msgstr "Thuộc tính alt của ảnh"
+
+msgctxt "Only update alt text for images without it"
+msgid "Only update alt text for images without it"
+msgstr "Chỉ cập nhật thuộc tính alt cho những ảnh không có thuộc tính này"
+
+msgctxt "Leave empty to use the original name."
+msgid "Leave empty to use the original name."
+msgstr "Để trống để sử dụng tên gốc."
+
+msgctxt "Image filename prefix"
+msgid "Image filename prefix"
+msgstr "Tiền tố tệp ảnh"
+
+msgctxt "Complete"
+msgid "Complete"
+msgstr "Hoàn tất"
+
+msgctxt "Retry"
+msgid "Retry"
+msgstr "Thử lại"
+
+msgctxt "Submit"
+msgid "Submit"
+msgstr "Thực hiện"
+
+msgctxt "Good, there are no external images in the content being edited."
+msgid "Good, there are no external images in the content being edited."
+msgstr "Tốt, không có hình ảnh bên ngoài trong nội dung đang chỉnh sửa."
+
+msgctxt "Invalid file path"
+msgid "Invalid file path"
+msgstr "Đường dẫn tệp không hợp lệ"
+
+msgctxt "The path must not be empty."
+msgid "The path must not be empty."
+msgstr "Thư mục lưu không được để trống."

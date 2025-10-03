@@ -46,3 +46,55 @@ msgstr "There are no external links in the editing content"
 msgctxt "Save external image"
 msgid "Save external image"
 msgstr "Save external image"
+
+msgctxt "Enter or browse to pick any file at the target location."
+msgid "Enter or browse to pick any file at the target location."
+msgstr "Enter or browse to pick any file at the target location."
+
+msgctxt "Folder to save"
+msgid "Folder to save"
+msgstr "Folder to save"
+
+msgctxt "Browse"
+msgid "Browse"
+msgstr "Browse"
+
+msgctxt "Image alt text"
+msgid "Image alt text"
+msgstr "Image alt text"
+
+msgctxt "Only update alt text for images without it"
+msgid "Only update alt text for images without it"
+msgstr "Only update alt text for images without it"
+
+msgctxt "Leave empty to use the original name."
+msgid "Leave empty to use the original name."
+msgstr "Leave empty to use the original name."
+
+msgctxt "Image filename prefix"
+msgid "Image filename prefix"
+msgstr "Image filename prefix"
+
+msgctxt "Complete"
+msgid "Complete"
+msgstr "Complete"
+
+msgctxt "Retry"
+msgid "Retry"
+msgstr "Retry"
+
+msgctxt "Submit"
+msgid "Submit"
+msgstr "Submit"
+
+msgctxt "Good, there are no external images in the content being edited."
+msgid "Good, there are no external images in the content being edited."
+msgstr "Good, there are no external images in the content being edited."
+
+msgctxt "Invalid file path"
+msgid "Invalid file path"
+msgstr "Invalid file path"
+
+msgctxt "The path must not be empty."
+msgid "The path must not be empty."
+msgstr "The path must not be empty."

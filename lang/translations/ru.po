@@ -46,3 +46,55 @@ msgstr "В редактируемом содержимом нет внешних
 msgctxt "Save external image"
 msgid "Save external image"
 msgstr "Сохранить внешнее изображение"
+
+msgctxt "Enter or browse to pick any file at the target location."
+msgid "Enter or browse to pick any file at the target location."
+msgstr "Введите или выберите файл в целевом расположении."
+
+msgctxt "Folder to save"
+msgid "Folder to save"
+msgstr "Папка для сохранения"
+
+msgctxt "Browse"
+msgid "Browse"
+msgstr "Обзор"
+
+msgctxt "Image alt text"
+msgid "Image alt text"
+msgstr "Альтернативный текст изображения"
+
+msgctxt "Only update alt text for images without it"
+msgid "Only update alt text for images without it"
+msgstr "Обновить только альтернативный текст для изображений без него"
+
+msgctxt "Leave empty to use the original name."
+msgid "Leave empty to use the original name."
+msgstr "Оставьте пустым, чтобы использовать оригинальное имя."
+
+msgctxt "Image filename prefix"
+msgid "Image filename prefix"
+msgstr "Префикс имени файла изображения"
+
+msgctxt "Complete"
+msgid "Complete"
+msgstr "Завершить"
+
+msgctxt "Retry"
+msgid "Retry"
+msgstr "Повторить"
+
+msgctxt "Submit"
+msgid "Submit"
+msgstr "Отправить"
+
+msgctxt "Good, there are no external images in the content being edited."
+msgid "Good, there are no external images in the content being edited."
+msgstr "Хорошо, в редактируемом содержимом нет внешних изображений."
+
+msgctxt "Invalid file path"
+msgid "Invalid file path"
+msgstr "Недопустимый путь к файлу"
+
+msgctxt "The path must not be empty."
+msgid "The path must not be empty."
+msgstr "Путь не должен быть пустым."
