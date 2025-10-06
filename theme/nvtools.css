@@ -36,3 +36,7 @@
     }
   }
 }
+
+.ck.ck-dialog-overlay.ck-nvtools-dialog {
+  z-index: 1058;
+}

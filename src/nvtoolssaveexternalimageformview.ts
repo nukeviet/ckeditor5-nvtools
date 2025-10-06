@@ -371,7 +371,13 @@ export class NVToolsSaveExternalImageFormView extends View {
 			});
 			button.on('execute', () => {
 				// Mở hộp thoại duyệt file
-				editor.execute('nvbox');
+				editor.execute('nvbox', button.element, {
+					imgfile: this.path,
+					callback: (data: Record<string, any>) => {
+						this.path = data.path;
+						this.focus();
+					}
+				});
 			});
 
 			// Render trước để lấy cái element và gán ID vào
