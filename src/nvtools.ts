@@ -7,7 +7,10 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
-import { Plugin } from 'ckeditor5';
+import {
+    Plugin,
+    type Dialog
+ } from 'ckeditor5';
 import NVToolsUI from './nvtoolsui.js';
 import B2H2Command from './b2h2command.js';
 import RemoveExternalLinksCommand from './removeexternallinkscommand.js';
@@ -35,6 +38,17 @@ export default class NVTools extends Plugin {
 
         editor.commands.add('b2h2', new B2H2Command(editor));
         editor.commands.add('removeExternalLinks', new RemoveExternalLinksCommand(editor));
+
+        /**
+         * Lắng nghe sự kiện đóng mở dialog để xử lý tích hợp với NukeViet
+         */
+        const dialog: Dialog = editor.plugins.get('Dialog');
+        dialog.on('show', () => {
+            document.documentElement.classList.add('ck-dialog-opened');
+        });
+        dialog.on('hide', () => {
+            document.documentElement.classList.remove('ck-dialog-opened');
+        });
 
         // Cho phép thẻ <b> trong schema
         // editor.model.schema.register('b', {
