@@ -12,6 +12,7 @@ import {
     type Dialog
  } from 'ckeditor5';
 import NVToolsUI from './nvtoolsui.js';
+import NVToolsCore from './nvtoolscore.js';
 import B2H2Command from './b2h2command.js';
 import RemoveExternalLinksCommand from './removeexternallinkscommand.js';
 
@@ -27,7 +28,7 @@ export default class NVTools extends Plugin {
      * @inheritDoc
      */
     static get requires() {
-        return [NVToolsUI, Notification] as const;
+        return [NVToolsUI, Notification, NVToolsCore] as const;
     }
 
     /**

@@ -8,6 +8,7 @@
  */
 
 import type {
+	NVConfig,
 	NVTools,
 	NVToolsUI,
 	B2H2Command,
@@ -15,6 +16,14 @@ import type {
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
+	// Cấu hình
+	interface EditorConfig {
+		/**
+		 *
+		 */
+		nukeviet?: NVConfig;
+	}
+
 	// Khai báo các plugin
 	interface PluginsMap {
 		[NVTools.pluginName]: NVTools;
