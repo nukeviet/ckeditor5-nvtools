@@ -39,7 +39,11 @@ export default class NVToolsCore extends Plugin {
         const editor: Editor = this.editor;
         const config: NVConfig = editor.config.get('nukeviet')!;
 
-        this.editorId = config.editorId || ('editor' + randomString(8));
+        if (typeof config.editorId !== 'undefined' && !!config.editorId) {
+            this.editorId = config.editorId;
+        } else {
+            this.editorId = 'editor' + randomString(8);
+        }
         if (typeof config.updateOnSubmit !== 'undefined') {
             this.updateOnSubmit = config.updateOnSubmit;
         }
