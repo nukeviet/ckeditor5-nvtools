@@ -37,17 +37,17 @@ export default class NVToolsCore extends Plugin {
      */
     public init(): void {
         const editor: Editor = this.editor;
-        const config: NVConfig = editor.config.get('nukeviet')!;
+        const config: NVConfig | undefined = editor.config.get('nukeviet');
 
-        if (typeof config.editorId !== 'undefined' && !!config.editorId) {
+        if (config && typeof config?.editorId !== 'undefined' && !!config?.editorId) {
             this.editorId = config.editorId;
         } else {
             this.editorId = 'editor' + randomString(8);
         }
-        if (typeof config.updateOnSubmit !== 'undefined') {
+        if (config && typeof config?.updateOnSubmit !== 'undefined') {
             this.updateOnSubmit = config.updateOnSubmit;
         }
-        if (config.height) {
+        if (config && config?.height) {
             const height = config.height;
             const style = document.createElement('style');
             style.id = 'nv-ckeditor5-style-' + this.editorId;
