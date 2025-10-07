@@ -417,7 +417,7 @@ export default class NVToolsUI extends Plugin {
             }
             xhr.withCredentials = withCredentials;
             const data = new FormData();
-            data.append('urlfile', imageUrl);
+            data.append('fileurl', imageUrl);
             if (!!alt) {
                 data.append('filealt', alt);
             }
