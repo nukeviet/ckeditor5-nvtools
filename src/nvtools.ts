@@ -28,7 +28,7 @@ export default class NVTools extends Plugin {
      * @inheritDoc
      */
     static get requires() {
-        return [NVToolsUI, Notification, NVToolsCore] as const;
+        return [NVToolsUI, NVToolsCore] as const;
     }
 
     /**
