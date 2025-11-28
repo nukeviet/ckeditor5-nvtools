@@ -74,6 +74,7 @@ export default class NVToolsCore extends Plugin {
         const editor = this.editor as ClassicEditor;
         const editorId = this.editorId;
         const updateOnSubmit = this.updateOnSubmit;
+        const config: NVConfig | undefined = editor.config.get('nukeviet');
 
         window.nveditor = window.nveditor || [];
         window.nveditor[editorId] = editor;
@@ -86,6 +87,18 @@ export default class NVToolsCore extends Plugin {
             source.form.addEventListener("submit", () => {
                 source.value = editor.getData();
             });
+        }
+
+        // Gọi hàm callback sau khi khởi tạo trình soạn thảo thành công
+        if (config && config.initCallback) {
+            if (typeof config.initCallback === 'string') {
+                const callbackFunc = (window as any)[config.initCallback];
+                if (typeof callbackFunc === 'function') {
+                    callbackFunc(editor);
+                }
+            } else if (typeof config.initCallback === 'function') {
+                config.initCallback(editor);
+            }
         }
     }
 }
