@@ -8,20 +8,20 @@
  */
 
 import {
-    View,
-    ViewCollection,
-    type Locale
+	View,
+	type ViewCollection,
+	type Locale
 } from 'ckeditor5';
 
 export class ElementView extends View {
-    public children: ViewCollection;
+	public children: ViewCollection;
 
-    constructor(locale: Locale) {
-        super(locale);
-        this.children = this.createCollection();
-        this.setTemplate({
-            tag: 'div',
-            children: this.children
-        });
-    }
+	constructor( locale: Locale ) {
+		super( locale );
+		this.children = this.createCollection();
+		this.setTemplate( {
+			tag: 'div',
+			children: this.children
+		} );
+	}
 }

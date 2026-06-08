@@ -18,6 +18,7 @@ import type {
 declare module '@ckeditor/ckeditor5-core' {
 	// Cấu hình
 	interface EditorConfig {
+
 		/**
 		 *
 		 */
