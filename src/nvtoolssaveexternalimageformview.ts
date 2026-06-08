@@ -16,11 +16,12 @@ import {
 	LabeledFieldView,
 	type InputTextView,
 	SwitchButtonView,
-	submitHandler
+	submitHandler,
+	FocusTracker,
+	KeystrokeHandler
 } from 'ckeditor5';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils.js';
 
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+// import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../theme/nvtoolssaveimage.css';
 
 /**
@@ -102,25 +103,25 @@ export class NVToolsSaveExternalImageFormView extends View {
 	/**
 	 * Mảng các hàm kiểm tra tính hợp lệ của form
 	 */
-	private readonly _validators: Array<(v: NVToolsSaveExternalImageFormView) => boolean>;
+	private readonly _validators: Array<( v: NVToolsSaveExternalImageFormView ) => boolean>;
 
 	/**
 	 * @param locale
 	 */
-	constructor(validators: Array<(v: NVToolsSaveExternalImageFormView) => boolean>, editor: Editor) {
-		const t = editor.locale.t!;
+	constructor( validators: Array<( v: NVToolsSaveExternalImageFormView ) => boolean>, editor: Editor ) {
+		// const t = editor.locale.t!;
 
-		super(editor.locale);
+		super( editor.locale );
 		this._validators = validators;
 
 		this.editor = editor;
 		this.focusTracker = new FocusTracker();
 		this.keystrokes = new KeystrokeHandler();
 
-		this.set('pathInputValue', '');
-		this.set('altInputValue', '');
-		this.set('updateNoAltOnlyCheckboxValue', true);
-		this.set('namePrefixInputValue', '');
+		this.set( 'pathInputValue', '' );
+		this.set( 'altInputValue', '' );
+		this.set( 'updateNoAltOnlyCheckboxValue', true );
+		this.set( 'namePrefixInputValue', '' );
 
 		this.pathInputView = this._createPathInput();
 		this.browseButtonView = this._createBrowseButton();
@@ -129,27 +130,27 @@ export class NVToolsSaveExternalImageFormView extends View {
 		this.namePrefixInputView = this._createNamePrefixInput();
 
 		// Dòng nhập path + nút browse
-		const row1 = new FormRowView(editor.locale);
-		row1.children.add(this.pathInputView);
-		row1.children.add(this.browseButtonView);
-		row1.class.push('ck-nvtools-form__row_column');
+		const row1 = new FormRowView( editor.locale );
+		row1.children.add( this.pathInputView );
+		row1.children.add( this.browseButtonView );
+		row1.class.push( 'ck-nvtools-form__row_column' );
 
-		const row2 = new FormRowView(editor.locale);
-		row2.children.add(this.altInputView);
-		row2.class.push('ck-nvtools-form__row_single');
+		const row2 = new FormRowView( editor.locale );
+		row2.children.add( this.altInputView );
+		row2.class.push( 'ck-nvtools-form__row_single' );
 
-		const row3 = new FormRowView(editor.locale);
-		row3.children.add(this.updateNoAltOnlySwitchView);
-		row3.class.push('ck-nvtools-form__row_single');
+		const row3 = new FormRowView( editor.locale );
+		row3.children.add( this.updateNoAltOnlySwitchView );
+		row3.class.push( 'ck-nvtools-form__row_single' );
 
-		const row4 = new FormRowView(editor.locale);
-		row4.children.add(this.namePrefixInputView);
-		row4.class.push('ck-nvtools-form__row_single');
+		const row4 = new FormRowView( editor.locale );
+		row4.children.add( this.namePrefixInputView );
+		row4.class.push( 'ck-nvtools-form__row_single' );
 
 		// Dòng hiển thị nội dung
-		this.dataView = new FormRowView(editor.locale);
+		this.dataView = new FormRowView( editor.locale );
 
-		this.setTemplate({
+		this.setTemplate( {
 			tag: 'form',
 
 			attributes: {
@@ -169,7 +170,7 @@ export class NVToolsSaveExternalImageFormView extends View {
 				row4,
 				this.dataView
 			]
-		});
+		} );
 	}
 
 	/**
@@ -178,17 +179,17 @@ export class NVToolsSaveExternalImageFormView extends View {
 	public override render(): void {
 		super.render();
 
-		submitHandler({
+		submitHandler( {
 			view: this
-		});
+		} );
 
-		this.focusTracker.add(this.pathInputView.element!);
-		this.focusTracker.add(this.browseButtonView.element!);
-		this.focusTracker.add(this.altInputView.element!);
-		this.focusTracker.add(this.updateNoAltOnlySwitchView.element!);
-		this.focusTracker.add(this.namePrefixInputView.element!);
+		this.focusTracker.add( this.pathInputView.element! );
+		this.focusTracker.add( this.browseButtonView.element! );
+		this.focusTracker.add( this.altInputView.element! );
+		this.focusTracker.add( this.updateNoAltOnlySwitchView.element! );
+		this.focusTracker.add( this.namePrefixInputView.element! );
 
-		this.keystrokes.listenTo(this.element!);
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -218,7 +219,7 @@ export class NVToolsSaveExternalImageFormView extends View {
 	/**
 	 * @param path The path to set.
 	 */
-	public set path(path: string) {
+	public set path( path: string ) {
 		this.pathInputView.fieldView.value = path.trim();
 		this.pathInputValue = this.pathInputView.fieldView.value;
 	}
@@ -233,7 +234,7 @@ export class NVToolsSaveExternalImageFormView extends View {
 	/**
 	 * @param alt The alt text to set.
 	 */
-	public set alt(alt: string) {
+	public set alt( alt: string ) {
 		this.altInputView.fieldView.value = alt.trim();
 		this.altInputValue = this.altInputView.fieldView.value;
 	}
@@ -248,7 +249,7 @@ export class NVToolsSaveExternalImageFormView extends View {
 	/**
 	 * @param prefix The prefix text to set.
 	 */
-	public set prefix(prefix: string) {
+	public set prefix( prefix: string ) {
 		this.namePrefixInputView.fieldView.value = prefix.trim();
 		this.namePrefixInputValue = this.namePrefixInputView.fieldView.value;
 	}
@@ -263,7 +264,7 @@ export class NVToolsSaveExternalImageFormView extends View {
 	/**
 	 * @param altOnly The value to set.
 	 */
-	public set altOnly(altOnly: boolean) {
+	public set altOnly( altOnly: boolean ) {
 		this.updateNoAltOnlySwitchView.isOn = altOnly;
 		this.updateNoAltOnlyCheckboxValue = this.updateNoAltOnlySwitchView.isOn;
 	}
@@ -278,8 +279,8 @@ export class NVToolsSaveExternalImageFormView extends View {
 
 		let errorNumber = 0;
 
-		for (const validator of this._validators) {
-			if (!validator(this)) {
+		for ( const validator of this._validators ) {
+			if ( !validator( this ) ) {
 				errorNumber++;
 			}
 		}
@@ -330,23 +331,23 @@ export class NVToolsSaveExternalImageFormView extends View {
 	private _createPathInput(): LabeledFieldView<InputTextView> {
 		const t = this.locale!.t;
 
-		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputText);
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const inputField = labeledInput.fieldView;
 
-		this._pathInputViewDefault = t('Enter or browse to pick any file at the target location.');
+		this._pathInputViewDefault = t( 'Enter or browse to pick any file at the target location.' );
 
-		labeledInput.label = t('Folder to save');
+		labeledInput.label = t( 'Folder to save' );
 		labeledInput.infoText = this._pathInputViewDefault;
-		labeledInput.extendTemplate({
+		labeledInput.extendTemplate( {
 			attributes: {
-				class: ['c10']
+				class: [ 'c10' ]
 			}
-		});
+		} );
 
 		inputField.inputMode = 'url';
-		inputField.on('input', () => {
+		inputField.on( 'input', () => {
 			this.pathInputValue = inputField.element!.value.trim();
-		});
+		} );
 
 		return labeledInput;
 	}
@@ -359,40 +360,41 @@ export class NVToolsSaveExternalImageFormView extends View {
 	private _createBrowseButton(): LabeledFieldView<ButtonView> {
 		const editor: Editor = this.editor;
 		const t = this.locale!.t;
-		const makeButton = (labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string) => {
-			const button = new ButtonView(labeledFieldView.locale!);
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const makeButton = ( labeledFieldView: LabeledFieldView, viewUid: string, statusUid: string ) => {
+			const button = new ButtonView( labeledFieldView.locale! );
 
-			button.label = t('Browse');
+			button.label = t( 'Browse' );
 			button.withText = true;
-			button.extendTemplate({
+			button.extendTemplate( {
 				attributes: {
-					class: ['ck-nvtools-button']
+					class: [ 'ck-nvtools-button' ]
 				}
-			});
-			button.on('execute', () => {
+			} );
+			button.on( 'execute', () => {
 				// Mở hộp thoại duyệt file
-				editor.execute('nvbox', button.element, {
+				editor.execute( 'nvbox', button.element, {
 					imgfile: this.path,
-					callback: (data: Record<string, any>) => {
+					callback: ( data: Record<string, any> ) => {
 						this.path = data.path;
 						this.focus();
 					}
-				});
-			});
+				} );
+			} );
 
 			// Render trước để lấy cái element và gán ID vào
 			button.render();
-			button.element!.setAttribute('id', viewUid);
+			button.element!.setAttribute( 'id', viewUid );
 
 			return button;
-		}
+		};
 
-		const labeledButton = new LabeledFieldView(this.locale, makeButton);
-		labeledButton.extendTemplate({
+		const labeledButton = new LabeledFieldView( this.locale, makeButton );
+		labeledButton.extendTemplate( {
 			attributes: {
-				class: ['c2']
+				class: [ 'c2' ]
 			}
-		});
+		} );
 
 		return labeledButton;
 	}
@@ -405,15 +407,15 @@ export class NVToolsSaveExternalImageFormView extends View {
 	private _createAltInput(): LabeledFieldView<InputTextView> {
 		const t = this.locale!.t;
 
-		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputText);
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const inputField = labeledInput.fieldView;
 
-		labeledInput.label = t('Image alt text');
+		labeledInput.label = t( 'Image alt text' );
 
 		inputField.inputMode = 'text';
-		inputField.on('input', () => {
+		inputField.on( 'input', () => {
 			this.altInputValue = inputField.element!.value.trim();
-		});
+		} );
 
 		return labeledInput;
 	}
@@ -425,19 +427,19 @@ export class NVToolsSaveExternalImageFormView extends View {
 	 */
 	private _createUpdateNoAltOnlySwitch(): SwitchButtonView {
 		const t = this.locale!.t;
-		const button = new SwitchButtonView(this.locale!);
+		const button = new SwitchButtonView( this.locale! );
 
-		button.label = t('Only update alt text for images without it');
+		button.label = t( 'Only update alt text for images without it' );
 		button.withText = true;
-		button.extendTemplate({
+		button.extendTemplate( {
 			attributes: {
-				class: ['ck-nvtools-switch-button']
+				class: [ 'ck-nvtools-switch-button' ]
 			}
-		});
-		button.on('execute', () => {
+		} );
+		button.on( 'execute', () => {
 			// Đảo trạng thái
 			button.isOn = !button.isOn;
-		});
+		} );
 
 		return button;
 	}
@@ -450,18 +452,18 @@ export class NVToolsSaveExternalImageFormView extends View {
 	private _createNamePrefixInput(): LabeledFieldView<InputTextView> {
 		const t = this.locale!.t;
 
-		const labeledInput = new LabeledFieldView(this.locale, createLabeledInputText);
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const inputField = labeledInput.fieldView;
 
-		this._prefixInputViewDefault = t('Leave empty to use the original name.');
+		this._prefixInputViewDefault = t( 'Leave empty to use the original name.' );
 
-		labeledInput.label = t('Image filename prefix');
+		labeledInput.label = t( 'Image filename prefix' );
 		labeledInput.infoText = this._prefixInputViewDefault;
 
 		inputField.inputMode = 'text';
-		inputField.on('input', () => {
+		inputField.on( 'input', () => {
 			this.namePrefixInputValue = inputField.element!.value.trim();
-		});
+		} );
 
 		return labeledInput;
 	}

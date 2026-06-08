@@ -3,36 +3,34 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
-
 .ck.ck-nvtools-panel {
-  padding: 0 15px;
-  width: 500px;
+	padding: 0 15px;
+	width: 500px;
 
-  @mixin ck-media-phone {
-    width: calc(100vw - var(--ck-spacing-large) - 32px);
-  }
+	@media (max-width: 600px) {
+		width: calc(100vw - var(--ck-spacing-large) - 32px);
+	}
 
-  >.ck-form__row {
-    padding: 0;
-  }
+	>.ck-form__row {
+		padding: 0;
+	}
 
-  .ck-nvtools-row {
-    flex-wrap: wrap;
+	.ck-nvtools-row {
+		flex-wrap: wrap;
 
-    .ck-button {
-      border-color: var(--ck-color-input-border);
-      flex: 0 0 45%;
-      max-width: 45%;
-      display: flex;
-      justify-content: center;
-      margin-inline-start: 0!important;
-      margin-top: var(--ck-spacing-large);
+		.ck-button {
+			border-color: var(--ck-color-input-border);
+			flex: 0 0 45%;
+			max-width: 45%;
+			display: flex;
+			justify-content: center;
+			margin-inline-start: 0!important;
+			margin-top: var(--ck-spacing-large);
 
-      @mixin ck-media-phone {
-        flex: 0 0 100%;
-        max-width: 100%;
-      }
-    }
-  }
+			@media (max-width: 600px) {
+				flex: 0 0 100%;
+				max-width: 100%;
+			}
+		}
+	}
 }

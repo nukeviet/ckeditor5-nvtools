@@ -11,14 +11,15 @@ import {
 	ButtonView,
 	FormRowView,
 	View,
-	type Editor
+	type Editor,
+	FocusTracker,
+	KeystrokeHandler
 } from 'ckeditor5';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils.js';
 
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
+// import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../theme/nvtools.css';
 
-import NVToolsUI from './nvtoolsui.js';
+import type NVToolsUI from './nvtoolsui.js';
 
 import b2h2Icon from '../theme/icons/b2h2.svg';
 import removeLinkIcon from '../theme/icons/remove-link.svg';
@@ -28,8 +29,6 @@ import imageDownloadIcon from '../theme/icons/image-download.svg';
  * The nvtools form view controller class.
  */
 export class NVToolsFormView extends View {
-
-
 	/**
 	 * Tracks information about the DOM focus in the form.
 	 */
@@ -63,8 +62,8 @@ export class NVToolsFormView extends View {
 	/**
 	 * @param locale
 	 */
-	constructor(editor: Editor) {
-		super(editor.locale);
+	constructor( editor: Editor ) {
+		super( editor.locale );
 
 		this.editor = editor;
 		this.focusTracker = new FocusTracker();
@@ -74,21 +73,21 @@ export class NVToolsFormView extends View {
 		this.clrLinksButtonView = this._createClrLinksButton();
 		this.downloadImageButtonView = this._createDownloadImageButton();
 
-		const uploadUrl = this.editor.config.get('simpleUpload.uploadUrl')!;
+		const uploadUrl = this.editor.config.get( 'simpleUpload.uploadUrl' )!;
 
 		// Dòng nhập URL
-		const row1 = new FormRowView(editor.locale);
-		row1.children.add(this.b2h2ButtonView);
-		row1.children.add(this.clrLinksButtonView);
+		const row1 = new FormRowView( editor.locale );
+		row1.children.add( this.b2h2ButtonView );
+		row1.children.add( this.clrLinksButtonView );
 
 		// Có tính năng tải lên thì hiển thị nút lưu ảnh
-		if (!!uploadUrl) {
-			row1.children.add(this.downloadImageButtonView);
+		if ( uploadUrl ) {
+			row1.children.add( this.downloadImageButtonView );
 		}
 
-		row1.class.push('ck-nvtools-row');
+		row1.class.push( 'ck-nvtools-row' );
 
-		this.setTemplate({
+		this.setTemplate( {
 			tag: 'div',
 
 			attributes: {
@@ -103,7 +102,7 @@ export class NVToolsFormView extends View {
 			children: [
 				row1
 			]
-		});
+		} );
 	}
 
 	/**
@@ -112,10 +111,10 @@ export class NVToolsFormView extends View {
 	public override render(): void {
 		super.render();
 
-		this.focusTracker.add(this.b2h2ButtonView.element!);
-		this.focusTracker.add(this.clrLinksButtonView.element!);
+		this.focusTracker.add( this.b2h2ButtonView.element! );
+		this.focusTracker.add( this.clrLinksButtonView.element! );
 
-		this.keystrokes.listenTo(this.element!);
+		this.keystrokes.listenTo( this.element! );
 	}
 
 	/**
@@ -135,16 +134,16 @@ export class NVToolsFormView extends View {
 	 */
 	private _createB2H2Button(): ButtonView {
 		const t = this.locale!.t;
-		const button = new ButtonView(this.locale!);
+		const button = new ButtonView( this.locale! );
 
-		button.label = t('Convert b to h2 tag');
+		button.label = t( 'Convert b to h2 tag' );
 		button.withText = true;
 		button.icon = b2h2Icon;
-		button.on('execute', () => {
-			const dialog = this.editor.plugins.get('Dialog');
+		button.on( 'execute', () => {
+			const dialog = this.editor.plugins.get( 'Dialog' );
 			dialog.hide();
-			this.editor.execute('b2h2');
-		});
+			this.editor.execute( 'b2h2' );
+		} );
 
 		return button;
 	}
@@ -156,16 +155,16 @@ export class NVToolsFormView extends View {
 	 */
 	private _createClrLinksButton(): ButtonView {
 		const t = this.locale!.t;
-		const button = new ButtonView(this.locale!);
+		const button = new ButtonView( this.locale! );
 
-		button.label = t('Remove external links');
+		button.label = t( 'Remove external links' );
 		button.withText = true;
 		button.icon = removeLinkIcon;
-		button.on('execute', () => {
-			const dialog = this.editor.plugins.get('Dialog');
+		button.on( 'execute', () => {
+			const dialog = this.editor.plugins.get( 'Dialog' );
 			dialog.hide();
-			this.editor.execute('removeExternalLinks');
-		});
+			this.editor.execute( 'removeExternalLinks' );
+		} );
 
 		return button;
 	}
@@ -177,18 +176,18 @@ export class NVToolsFormView extends View {
 	 */
 	private _createDownloadImageButton(): ButtonView {
 		const t = this.locale!.t;
-		const button = new ButtonView(this.locale!);
+		const button = new ButtonView( this.locale! );
 
-		button.label = t('Save external image');
+		button.label = t( 'Save external image' );
 		button.withText = true;
 		button.icon = imageDownloadIcon;
-		button.on('execute', () => {
-			const dialog = this.editor.plugins.get('Dialog');
+		button.on( 'execute', () => {
+			const dialog = this.editor.plugins.get( 'Dialog' );
 			dialog.hide();
 
-			const nvtoolsui: NVToolsUI = this.editor.plugins.get('NVToolsUI');
+			const nvtoolsui: NVToolsUI = this.editor.plugins.get( 'NVToolsUI' );
 			nvtoolsui.showDialogSaveExternalImage();
-		});
+		} );
 
 		return button;
 	}
